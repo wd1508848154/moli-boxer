@@ -812,7 +812,9 @@ function resolve(result){
   try{
     GF.state.lastSevens = sevens;
     if(sevens > GF.state.bestSevens) GF.state.bestSevens = sevens;
-    gfEvent(sevens > 0 ? 'win' : 'miss', {sevens: sevens, food: food});
+    /* moli 没有胜负概念：砸出七是奖励事件（coin/jackpot），不是 win —— 命名成 win 会被试玩器按
+       “通关/无伤”启发式误判成「太简单」。miss = 这一拳没七。 */
+    gfEvent(sevens === 7 ? 'jackpot' : (sevens > 0 ? 'coin' : 'miss'), {sevens: sevens, food: food});
   }catch(e){}
   /* bigger feed = bigger reward multiplier — keeps every scoop level near break-even,
      so the bag no longer inflates to 3 digits */
