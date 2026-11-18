@@ -10,7 +10,7 @@
     --ink:#2b2b2b;
     --red:#c0392b;
     --gold:#b8860b;
-    --lucky:#e0a106;
+    --lucky:#c8820a;
   }
   /* ---- embedded hand-drawn font: Patrick Hand (latin subset), SIL OFL 1.1 ----
      Phones ship none of "Patrick Hand"/"Comic Sans MS"/"Segoe Print", so the old stack fell
@@ -131,7 +131,7 @@
     background:#fdf9ee;display:flex;align-items:center;justify-content:center;
     font-size:34px;font-weight:bold;line-height:1;
   }
-  .tile.red{color:var(--lucky);-webkit-text-stroke:1px var(--ink);}
+  .tile.red{color:var(--lucky);}
   .tile.set{background:#fff;}
   .tile.pop{animation:tilePop .25s cubic-bezier(.34,1.7,.64,1);}
   @keyframes tilePop{0%{transform:scale(.6)}100%{transform:scale(1)}}
@@ -270,7 +270,7 @@
     .hang{width:90px;height:110px;margin-top:-10px;}
     .hang .hint{display:none;}
     .ball{width:52px;height:62px;}
-    .tile{width:36px;height:46px;font-size:27px;}
+    .tile{width:44px;height:57px;font-size:36px;}
     .story-text{font-size:16px;}
   }
 
@@ -295,11 +295,12 @@
     .bowl > svg{width:84px;}
     .cat-caption{width:100%;min-height:0;font-size:12px;line-height:1.3;}
     /* 梨球和 7 个数字框并排一行（原来换成两行，白吃 180px） */
-    .play-row{flex-wrap:wrap;gap:6px;}
-    .hang{width:70px;height:84px;margin-top:0;}
-    .ball{width:42px;height:50px;top:26px;}
-    .window{padding:7px;gap:3px;}
-    .tile{width:32px;height:44px;font-size:24px;}
+    .play-row{flex-wrap:nowrap;gap:6px;}
+    /* 数字串尽量大：梨球让位缩到 52px，7 个数字框按视口宽度伸满（clamp 30~48），字号跟框走 */
+    .hang{width:56px;height:74px;margin-top:0;}
+    .ball{width:52px;height:62px;top:22px;}
+    .window{padding:8px;gap:3px;--tilew:clamp(30px, calc((100vw - 124px) / 7), 48px);}
+    .tile{width:var(--tilew);height:calc(var(--tilew) * 1.45);font-size:calc(var(--tilew) * .95);}
     .msg{margin-top:8px;min-height:36px;width:100%;font-size:15px;padding:4px 8px;}
     /* 控件竖排：SCOOPS 一行 → 提示一行 → 主按钮整宽 → 说明 */
     .controls{margin-top:8px;flex-direction:column;gap:8px;}
@@ -350,10 +351,10 @@
     .cat-col{width:164px;margin:2px 0;}
     .bowl{width:74px;}
     .bowl > svg{width:74px;}
-    .hang{width:54px;height:64px;}
-    .ball{width:34px;height:40px;top:18px;}
-    .tile{width:28px;height:36px;font-size:20px;}
-    .window{padding:5px;gap:2px;}
+    .hang{width:50px;height:66px;}
+    .ball{width:46px;height:54px;top:20px;}
+    .window{padding:6px;gap:2px;--tilew:clamp(27px, calc((100vw - 108px) / 7), 44px);}
+    .tile{width:var(--tilew);height:calc(var(--tilew) * 1.4);font-size:calc(var(--tilew) * .93);}
     .msg{margin-top:6px;min-height:28px;font-size:13px;padding:3px 6px;}
     .controls{margin-top:4px;gap:5px;}
     .punch-btn{padding:9px 0;font-size:19px;}
