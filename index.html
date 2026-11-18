@@ -309,6 +309,17 @@
     .punch-btn{width:100%;max-width:330px;padding:12px 0;font-size:22px;letter-spacing:2px;}
     .cost-note{font-size:13px;}
     .bag-row{margin-top:8px;}
+    /* 手机端纵向顺序（用户反馈：小猫和饭碗要夹在粮袋与 SCOOPS 中间）：
+       梨球/数字 → 消息 → 粮袋 → 猫+碗 → SCOOPS → FEED & PUNCH。
+       用 display:contents 让 .game-col 的子块直接参与 .board-wrap 的纵向排列，再用 order 排名次，
+       这样桌面端的三栏结构完全不受影响。 */
+    .game-col{display:contents;}
+    .play-row{order:1;margin-top:6px;}
+    .msg{order:2;}
+    .bag-row{order:3;}
+    .cat-col{order:4;margin:8px 0;}
+    .controls{order:5;width:100%;}
+    .rank-col{order:6;}
     .bag{padding:5px 14px;gap:8px;}
     .bag .num{font-size:24px;}
     .bag svg{width:28px;}
@@ -324,22 +335,28 @@
     .story-skip{padding:8px 16px;}
   }
 
-  /* ---- short phones (<=700px tall, e.g. 360x640): one more notch tighter ---- */
+  /* ---- short phones (<=700px tall, e.g. 360x640): one more notch tighter ----
+     顺序改成「梨球→消息→粮袋→猫+碗→SCOOPS」后总高多出约 70px，矮屏必须再收一档，
+     否则 FEED & PUNCH 会掉到屏幕外。 */
   @media (max-width:520px) and (max-height:700px){
-    .logo{font-size:24px;}
-    .tagline{font-size:11.5px;}
-    .cat{width:96px;}
-    .bowl{width:82px;}
-    .bowl > svg{width:82px;}
-    .hang{width:62px;height:74px;}
-    .ball{width:38px;height:44px;top:22px;}
-    .tile{width:30px;height:40px;font-size:22px;}
-    .window{padding:6px;gap:2px;}
-    .msg{margin-top:6px;min-height:32px;font-size:14px;}
-    .controls{margin-top:6px;gap:6px;}
-    .punch-btn{padding:10px 0;font-size:20px;}
-    .bag{padding:4px 12px;}
-    .bag .num{font-size:22px;}
+    .logo{font-size:22px;}
+    .tagline{font-size:11px;}
+    .play-row{margin-top:0;gap:4px;}
+    .cat{width:86px;}
+    .cat-caption{display:none;}
+    .cat-col{margin:2px 0;}
+    .bowl{width:74px;}
+    .bowl > svg{width:74px;}
+    .hang{width:54px;height:64px;}
+    .ball{width:34px;height:40px;top:18px;}
+    .tile{width:28px;height:36px;font-size:20px;}
+    .window{padding:5px;gap:2px;}
+    .msg{margin-top:6px;min-height:28px;font-size:13px;padding:3px 6px;}
+    .controls{margin-top:4px;gap:5px;}
+    .punch-btn{padding:9px 0;font-size:19px;}
+    .bag{padding:3px 10px;}
+    .bag .num{font-size:20px;}
+    .bag svg{width:24px;}
     .rk-row{padding:3px 3px;font-size:13px;}
     footer{font-size:10px;}
   }
