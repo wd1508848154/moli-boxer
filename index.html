@@ -289,9 +289,9 @@
     .music-btn{top:0;right:0;font-size:13px;padding:7px 13px;}
     /* 猫+碗一行，说明文字独占一行（原来被挤成 88px 宽、5 行） */
     .cat-col{flex-wrap:wrap;gap:4px;}
-    .cat{width:112px;}
-    .bowl{width:92px;margin-left:4px;}
-    .bowl > svg{width:92px;}
+    .cat{width:100px;}
+    .bowl{width:84px;margin-left:4px;}
+    .bowl > svg{width:84px;}
     .cat-caption{width:100%;min-height:0;font-size:12px;line-height:1.3;}
     /* 梨球和 7 个数字框并排一行（原来换成两行，白吃 180px） */
     .play-row{flex-wrap:wrap;gap:6px;}
@@ -309,17 +309,19 @@
     .punch-btn{width:100%;max-width:330px;padding:12px 0;font-size:22px;letter-spacing:2px;}
     .cost-note{font-size:13px;}
     .bag-row{margin-top:8px;}
-    /* 手机端纵向顺序（用户反馈：小猫和饭碗要夹在粮袋与 SCOOPS 中间）：
-       梨球/数字 → 消息 → 粮袋 → 猫+碗 → SCOOPS → FEED & PUNCH。
-       用 display:contents 让 .game-col 的子块直接参与 .board-wrap 的纵向排列，再用 order 排名次，
-       这样桌面端的三栏结构完全不受影响。 */
+    /* 手机端排布（按用户手绘草稿）：
+         [梨球][1 2 3 - -]     ← 一行
+         [猫+碗][粮袋]          ← 一行：猫正对上方梨球（出拳够得着），粮袋在猫右边
+         [消息框] → [SCOOPS → FEED & PUNCH] → [排行榜]
+       .game-col 用 display:contents 让内部块直接参与 .board-wrap 排列，桌面三栏完全不受影响。 */
+    .board-wrap{flex-direction:row;flex-wrap:wrap;justify-content:center;align-items:center;}
     .game-col{display:contents;}
-    .play-row{order:1;margin-top:6px;}
-    .msg{order:2;}
-    .bag-row{order:3;}
-    .cat-col{order:4;margin:8px 0;}
+    .play-row{order:1;width:100%;margin-top:6px;}
+    .cat-col{order:2;width:190px;flex:0 0 auto;margin:8px 0;justify-content:flex-start;}
+    .bag-row{order:3;width:auto;flex:0 0 auto;margin-top:0;}
+    .msg{order:4;width:100%;}
     .controls{order:5;width:100%;}
-    .rank-col{order:6;}
+    .rank-col{order:6;width:100%;max-width:330px;}
     .bag{padding:5px 14px;gap:8px;}
     .bag .num{font-size:24px;}
     .bag svg{width:28px;}
@@ -344,7 +346,7 @@
     .play-row{margin-top:0;gap:4px;}
     .cat{width:86px;}
     .cat-caption{display:none;}
-    .cat-col{margin:2px 0;}
+    .cat-col{width:164px;margin:2px 0;}
     .bowl{width:74px;}
     .bowl > svg{width:74px;}
     .hang{width:54px;height:64px;}
