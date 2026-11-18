@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOLI's Pear Ball — Lucky 777 Mini</title>
+<style>
+  :root{
+    --paper:#f6f0e0;
+    --ink:#2b2b2b;
+    --red:#c0392b;
+    --gold:#b8860b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;user-select:none;-webkit-user-select:none;}
+  body{
+    min-height:100vh;
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(0,0,0,.025) 0 2px, transparent 2px),
+      radial-gradient(circle at 70% 60%, rgba(0,0,0,.02) 0 2px, transparent 2px);
+    background-size:190px 190px, 240px 240px;
+    font-family:"Patrick Hand","Comic Sans MS","Segoe Print",cursive,sans-serif;
+    color:var(--ink);
+    display:flex;justify-content:center;align-items:flex-start;
+    padding:20px 12px;
+  }
+  .page{max-width:1020px;width:100%;position:relative;}
+
+  header{text-align:center;margin-bottom:8px;}
+  .logo{font-size:40px;font-weight:bold;letter-spacing:4px;color:var(--red);
+    -webkit-text-stroke:1.5px var(--ink);transform:rotate(-1.5deg);display:inline-block;}
+  .tagline{font-size:15px;color:#555;letter-spacing:2px;margin-top:2px;}
+
+  .board-wrap{display:flex;gap:16px;align-items:stretch;flex-wrap:wrap;}
+
+  /* ---- left: cat + bowl ---- */
+  svg.cat{overflow:visible;} /* the punch jump lifts ear tips past the viewBox — don't clip */
+  .cat-col{flex:0 1 190px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;}
+  .cat{width:150px;}
+  .cat .body-g{transform-origin:50% 90%;}
+  .cat.idle .body-g{animation:breathe 3s ease-in-out infinite;}
+  .cat.eat  .body-g{animation:eatDip 1s ease-in-out 1;}
+  .cat.flex .body-g{animation:flexUp .5s ease-in-out 3;}
+  .cat.hit  .body-g{animation:punchLunge .5s ease-out 1;}
+  .cat.watch .body-g{animation:watchBounce .45s ease-in-out infinite;}
+  .cat.win  .body-g{animation:catJump .55s ease-out 2;}
+  .cat.big  .body-g{animation:catJump .45s ease-out 4;}
+  .cat.sad  .body-g{animation:sag 1s ease-out 1 forwards;}
+  @keyframes breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+  @keyframes eatDip{
+    0%,100%{transform:translate(0,0)}
+    30%{transform:translate(0,18px) rotate(3deg)}
+    55%{transform:translate(0,13px) rotate(3deg)}
+    80%{transform:translate(0,16px) rotate(3deg)}
+  }
+  @keyframes flexUp{0%,100%{transform:scale(1,1)}50%{transform:scale(1.22,.78) translateY(3px)}}
+  @keyframes watchBounce{0%,100%{transform:translate(0,0) rotate(0)}50%{transform:translate(5px,-11px) rotate(-6deg)}}
+  @keyframes sag{0%{transform:translateY(0)}45%{transform:translateY(14px) rotate(-7deg)}100%{transform:translateY(12px) rotate(-6deg)}}
+  /* arms flex up in warm-up */
+  .cat .arm{transform-box:fill-box;}
+  .cat.flex .arm-l{animation:armFlexL .5s ease-in-out 3;}
+  .cat.flex .arm-r{animation:armFlexR .5s ease-in-out 3;}
+  @keyframes armFlexL{0%,100%{transform:rotate(0)}50%{transform:rotate(-155deg)}}
+  @keyframes armFlexR{0%,100%{transform:rotate(0)}50%{transform:rotate(155deg)}}
+  /* tail always wags; fast when happy */
+  .cat .tail{transform-box:fill-box;transform-origin:15% 85%;animation:tailWag 2.4s ease-in-out infinite;}
+  .cat.win .tail,.cat.big .tail{animation:tailFast .3s ease-in-out infinite;}
+  @keyframes tailWag{0%,100%{transform:rotate(0)}50%{transform:rotate(12deg)}}
+  @keyframes tailFast{0%,100%{transform:rotate(0)}50%{transform:rotate(26deg)}}
+  /* eyes blink once in a while */
+  .cat .eyes{transform-box:fill-box;transform-origin:50% 50%;animation:blink 4.6s step-end infinite;}
+  @keyframes blink{0%,93%{transform:scaleY(1)}95%,97%{transform:scaleY(.1)}99%{transform:scaleY(1)}}
+  .bowl.eat svg{animation:bowlShake 1s ease-in-out 1;}
+  @keyframes bowlShake{0%,100%{transform:rotate(0)}25%{transform:rotate(-4deg)}50%{transform:rotate(3deg)}75%{transform:rotate(-2deg)}}
+  /* MOLI leaps up at the pear ball, lands back */
+  @keyframes punchLunge{
+    0%{transform:translate(0,0)}
+    25%{transform:translate(18px,-12px) rotate(-4deg)}
+    55%{transform:translate(52px,-34px) rotate(8deg)}
+    72%{transform:translate(46px,-22px) rotate(5deg)}
+    100%{transform:translate(0,0)}
+  }
+  @keyframes catJump{0%,100%{transform:translateY(0)}40%{transform:translateY(-18px)}}
+  .bowl{width:110px;position:relative;}
+  .bowl-dots{position:absolute;left:0;right:0;top:6px;display:flex;justify-content:center;gap:4px;}
+  .bowl-dots i{
+    width:9px;height:9px;border-radius:50%;background:#6b4f2a;border:1.5px solid var(--ink);
+    transform:scale(0);transition:transform .3s cubic-bezier(.34,1.7,.64,1);
+  }
+  .bowl-dots i.on{transform:scale(1);}
+  .cat-caption{font-size:13px;color:#555;text-align:center;letter-spacing:.5px;min-height:32px;}
+
+  /* ---- center: hanging pear ball + number window (side by side, like the sketch) ---- */
+  .game-col{flex:1 1 380px;display:flex;flex-direction:column;align-items:center;}
+  .play-row{display:flex;align-items:center;gap:8px;width:100%;justify-content:center;}
+  .hang{position:relative;width:120px;height:150px;cursor:pointer;margin-top:-24px;flex:none;}
+  .string{position:absolute;left:50%;top:0;width:3px;height:34px;background:var(--ink);transform:translateX(-50%);}
+  .ball{position:absolute;left:50%;top:30px;width:64px;height:76px;transform-origin:50% -34px;transform:translateX(-50%);}
+  .hang.hit .ball{animation:swing .7s cubic-bezier(.3,.7,.4,1) 1;}
+  @keyframes swing{
+    0%{transform:translateX(-50%) rotate(0)}
+    30%{transform:translateX(-50%) rotate(38deg)}
+    60%{transform:translateX(-50%) rotate(-16deg)}
+    85%{transform:translateX(-50%) rotate(7deg)}
+    100%{transform:translateX(-50%) rotate(0)}
+  }
+  .whoosh{
+    position:absolute;right:-34px;top:44px;font-size:26px;font-weight:bold;color:#777;
+    letter-spacing:2px;opacity:0;transition:opacity .15s;
+  }
+  .hang.hit .whoosh{opacity:1;}
+  .hang .hint{position:absolute;left:-64px;top:60px;font-size:13px;color:#999;width:60px;text-align:right;line-height:1.2;}
+
+  .window{
+    display:flex;gap:5px;flex:none;
+    background:#fbf6e7;border:3px solid var(--ink);border-radius:14px;
+    padding:12px;box-shadow:5px 6px 0 rgba(43,43,43,.18);
+    transform:rotate(-.5deg);
+  }
+  .tile{
+    width:44px;height:56px;border:2.5px solid var(--ink);border-radius:9px;
+    background:#fdf9ee;display:flex;align-items:center;justify-content:center;
+    font-size:34px;font-weight:bold;line-height:1;
+  }
+  .tile.red{color:var(--red);-webkit-text-stroke:1px var(--ink);}
+  .tile.set{background:#fff;}
+  .tile.pop{animation:tilePop .25s cubic-bezier(.34,1.7,.64,1);}
+  @keyframes tilePop{0%{transform:scale(.6)}100%{transform:scale(1)}}
+
+  .msg{
+    margin-top:12px;min-height:40px;width:96%;
+    display:flex;align-items:center;justify-content:center;
+    border:2.5px dashed var(--ink);border-radius:10px;background:#fbf6e7;
+    font-size:18px;letter-spacing:1px;padding:5px 10px;text-align:center;
+  }
+  .msg.win{border-style:solid;color:var(--red);font-weight:bold;}
+  .msg.big{background:#2b2b2b;color:#ffe27a;border-color:#111;}
+
+  .controls{margin-top:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;}
+  .punch-btn{
+    font-family:inherit;font-size:24px;font-weight:bold;letter-spacing:3px;
+    padding:10px 38px;color:#fdf9ee;background:var(--red);
+    border:3px solid var(--ink);border-radius:14px;box-shadow:0 5px 0 var(--ink);
+    cursor:pointer;transition:transform .08s, box-shadow .08s;
+  }
+  .punch-btn:hover{transform:translateY(-2px);box-shadow:0 7px 0 var(--ink);}
+  .punch-btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--ink);}
+  .punch-btn:disabled{opacity:.55;cursor:default;transform:none;box-shadow:0 5px 0 var(--ink);}
+  .cost-note{font-size:15px;color:#666;}
+  /* feed amount picker (1-5 scoops) */
+  .feed-pick{display:flex;align-items:center;gap:6px;}
+  .fp-lbl{font-size:15px;color:#555;letter-spacing:1px;}
+  .fp-btn{
+    font-family:inherit;width:34px;height:34px;font-size:17px;font-weight:bold;
+    border:2.5px solid var(--ink);border-radius:9px;background:#fdf9ee;color:var(--ink);
+    cursor:pointer;box-shadow:0 3px 0 var(--ink);transition:transform .06s, box-shadow .06s, background .1s;
+  }
+  .fp-btn:active{transform:translateY(3px);box-shadow:0 0 0 var(--ink);}
+  .fp-btn.sel{background:var(--gold);color:#fff;-webkit-text-stroke:.5px var(--ink);}
+  .fp-hint{font-size:13px;color:#999;}
+  /* music toggle */
+  .music-btn{
+    position:absolute;top:14px;right:16px;font-family:inherit;font-size:14px;
+    padding:4px 12px;border:2.5px solid var(--ink);border-radius:10px;
+    background:#fbf6e7;color:var(--ink);cursor:pointer;box-shadow:0 3px 0 var(--ink);
+    letter-spacing:1px;
+  }
+  .music-btn:active{transform:translateY(3px);box-shadow:0 0 0 var(--ink);}
+  .music-btn.off{opacity:.55;text-decoration:line-through;}
+
+  /* ---- right: rank ---- */
+  .rank-col{flex:0 1 200px;display:flex;flex-direction:column;}
+  .rank{
+    background:#fbf6e7;border:3px solid var(--ink);border-radius:14px;
+    padding:10px;box-shadow:5px 6px 0 rgba(43,43,43,.18);
+  }
+  .rank h3{font-size:17px;letter-spacing:2px;text-align:center;margin-bottom:8px;color:#555;}
+  .rank input{
+    font-family:inherit;width:100%;padding:5px 8px;
+    border:2.5px dashed var(--ink);border-radius:8px;background:#fdf9ee;
+    font-size:15px;text-align:center;outline:none;
+  }
+  .rank input:focus{border-style:solid;}
+  .rk-row{display:flex;align-items:center;gap:7px;padding:5px 4px;font-size:16px;}
+  .rk-badge{
+    width:24px;height:24px;border-radius:7px;border:2px solid var(--ink);
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;font-weight:bold;background:#eee;
+  }
+  .rk-badge.a{background:#ffe27a;}
+  .rk-badge.b{background:#d9d9d9;}
+  .rk-badge.c{background:#eecfa9;}
+  .rk-nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .rk-n7{font-weight:bold;color:var(--red);}
+  .rk-row.me{background:#fff3d6;border-radius:8px;}
+  .rk-row.me .rk-nm{font-weight:bold;}
+  .rk-hint{font-size:14px;color:#999;text-align:center;padding:4px;}
+
+  /* ---- bottom: food bag ---- */
+  .bag-row{display:flex;justify-content:center;margin-top:10px;}
+  .bag{display:flex;align-items:center;gap:12px;background:#fbf6e7;
+    border:3px solid var(--ink);border-radius:14px;padding:8px 18px;
+    box-shadow:4px 5px 0 rgba(43,43,43,.18);transform:rotate(.5deg);}
+  .bag .num{font-size:28px;font-weight:bold;color:var(--red);}
+  .bag .lbl{font-size:14px;letter-spacing:2px;color:#555;line-height:1.2;}
+
+  footer{text-align:center;margin-top:16px;font-size:14px;color:#8a8270;letter-spacing:1px;}
+
+  /* ---- prologue: MOLI's story ---- */
+  .story{
+    position:fixed;inset:0;z-index:50;
+    background:var(--paper);
+    background-image:radial-gradient(circle at 30% 40%, rgba(0,0,0,.03) 0 2px, transparent 2px);
+    background-size:180px 180px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:24px;cursor:pointer;text-align:center;
+    transition:opacity .5s;
+  }
+  .story.gone{opacity:0;pointer-events:none;}
+  .story-kicker{font-size:14px;letter-spacing:4px;color:#999;margin-bottom:6px;}
+  .story-art{width:min(300px,60vw);height:auto;margin:6px 0 14px;}
+  .story-art svg{width:100%;height:auto;overflow:visible;}
+  .story-text{
+    font-size:20px;line-height:1.55;max-width:560px;color:var(--ink);
+    min-height:96px;letter-spacing:.5px;
+  }
+  .story-text b{color:var(--red);}
+  .story-nav{margin-top:18px;font-size:14px;color:#a89f8a;letter-spacing:2px;}
+  .story-dots{display:flex;gap:8px;margin-top:10px;}
+  .story-dots i{width:9px;height:9px;border-radius:50%;border:2px solid var(--ink);background:transparent;transition:background .2s;}
+  .story-dots i.on{background:var(--ink);}
+  .story-skip{
+    position:fixed;top:16px;right:16px;font-family:inherit;font-size:14px;
+    padding:5px 16px;border:2.5px solid var(--ink);border-radius:10px;
+    background:transparent;color:#777;cursor:pointer;letter-spacing:1px;box-shadow:0 3px 0 var(--ink);
+  }
+  .story-btn{
+    font-family:inherit;font-size:24px;font-weight:bold;letter-spacing:3px;
+    padding:12px 40px;margin-top:18px;color:#fdf9ee;background:var(--red);
+    border:3px solid var(--ink);border-radius:14px;box-shadow:0 5px 0 var(--ink);
+    cursor:pointer;
+  }
+  .story-btn:hover{transform:translateY(-2px);box-shadow:0 7px 0 var(--ink);}
+  .story-btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--ink);}
+  /* little scene animations */
+  .s-float{animation:sFloat 3s ease-in-out infinite;}
+  @keyframes sFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  .s-tv-flicker{animation:tvFlicker .9s step-end infinite;}
+  @keyframes tvFlicker{0%,100%{opacity:1}50%{opacity:.75}}
+  .s-shiver{animation:shiver .35s ease-in-out infinite;}
+  @keyframes shiver{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px) rotate(-2deg)}75%{transform:translateX(3px) rotate(2deg)}}
+  .s-hungry{animation:hungryWob 2s ease-in-out infinite;}
+  @keyframes hungryWob{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+
+  @media (max-width:860px){
+    .board-wrap{flex-direction:column;align-items:center;}
+    .cat-col{flex:none;flex-direction:row;width:100%;justify-content:center;align-items:flex-end;}
+    .bowl{margin-left:6px;}
+    .rank-col{flex:none;width:100%;max-width:340px;}
+    .play-row{flex-wrap:wrap;gap:4px;}
+    .hang{width:90px;height:110px;margin-top:-10px;}
+    .hang .hint{display:none;}
+    .ball{width:52px;height:62px;}
+    .tile{width:36px;height:46px;font-size:27px;}
+    .story-text{font-size:16px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ PROLOGUE: MOLI's story ============ -->
+<div class="story" id="story">
+  <button class="story-skip" id="storySkip">SKIP ▶</button>
+  <div class="story-kicker" id="storyKicker">PROLOGUE · CHAPTER 1 / 5</div>
+  <div class="story-art" id="storyArt"></div>
+  <div class="story-text" id="storyText"></div>
+  <div class="story-nav" id="storyNav">click to continue ▸</div>
+  <div class="story-dots" id="storyDots"><i class="on"></i><i></i><i></i><i></i><i></i></div>
+</div>
+
+<div class="page">
+  <button class="music-btn" id="musicBtn">♪ BGM: ON</button>
+  <header>
+    <div class="logo">PEAR BALL <span style="color:var(--ink)">·</span> LUCKY 7</div>
+    <div class="tagline">A stray kitten · a ROCKY dream · one hungry champion — feed him, one punch, roll sevens</div>
+  </header>
+
+  <div class="board-wrap">
+    <!-- cat + bowl -->
+    <div class="cat-col">
+      <svg class="cat idle" id="cat" viewBox="0 0 120 150">
+        <g class="body-g">
+          <!-- ears -->
+          <path d="M38 26 L34 6 L52 18" fill="#f6f0e0" stroke="#2b2b2b" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M82 26 L86 6 L68 18" fill="#f6f0e0" stroke="#2b2b2b" stroke-width="3" stroke-linejoin="round"/>
+          <!-- head -->
+          <ellipse cx="60" cy="40" rx="34" ry="26" fill="#f6f0e0" stroke="#2b2b2b" stroke-width="3"/>
+          <!-- face -->
+          <g class="eyes">
+            <circle cx="49" cy="36" r="2.6" fill="#2b2b2b"/>
+            <circle cx="71" cy="36" r="2.6" fill="#2b2b2b"/>
+          </g>
+          <path d="M56 46 Q60 50 64 46" fill="none" stroke="#2b2b2b" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- body / shirt -->
+          <rect x="38" y="64" width="44" height="52" rx="14" fill="#f6f0e0" stroke="#2b2b2b" stroke-width="3"/>
+          <text x="60" y="94" text-anchor="middle" font-size="15" font-weight="bold" fill="#2b2b2b" font-family="inherit">MOLI</text>
+          <!-- tail -->
+          <path class="tail" d="M82 108 Q104 102 100 78" fill="none" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>
+          <!-- arms -->
+          <path class="arm arm-l" d="M38 74 Q26 82 30 96" fill="none" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>
+          <path class="arm arm-r" d="M82 74 Q94 82 90 96" fill="none" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>
+          <!-- legs -->
+          <path d="M50 116 L48 138" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>
+          <path d="M70 116 L72 138" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>
+        </g>
+      </svg>
+      <div class="bowl">
+        <svg viewBox="0 0 110 46" width="110">
+          <path d="M10 12 L100 12 L88 42 L22 42 Z" fill="#fbf6e7" stroke="#2b2b2b" stroke-width="3" stroke-linejoin="round"/>
+        </svg>
+        <div class="bowl-dots" id="bowlDots"></div>
+      </div>
+      <div class="cat-caption" id="catCaption">Champ MOLI trains hard… please feed him cat food!</div>
+    </div>
+
+    <!-- pear ball + number window -->
+    <div class="game-col">
+      <div class="play-row">
+        <div class="hang" id="hang" title="Punch!">
+          <div class="string"></div>
+          <div class="ball">
+            <svg viewBox="0 0 64 76" width="64">
+              <path d="M32 2 C46 20 58 34 58 50 A26 24 0 1 1 6 50 C6 34 18 20 32 2 Z"
+                    fill="#f6f0e0" stroke="#2b2b2b" stroke-width="3"/>
+              <path d="M20 44 Q26 40 32 44 Q38 48 44 44" fill="none" stroke="#2b2b2b" stroke-width="2" stroke-linecap="round" opacity=".5"/>
+            </svg>
+          </div>
+          <div class="whoosh">)))</div>
+          <div class="hint">click the pear ball!</div>
+        </div>
+
+        <div class="window" id="winBox"></div>
+      </div>
+      <div class="msg" id="msg">Boxer MOLI is in training — pour cat food into his bowl to power a punch!</div>
+      <div class="controls">
+        <div class="feed-pick" id="feedPick">
+          <span class="fp-lbl">SCOOPS:</span>
+          <button class="fp-btn sel" data-n="1">1</button>
+          <button class="fp-btn" data-n="2">2</button>
+          <button class="fp-btn" data-n="3">3</button>
+          <button class="fp-btn" data-n="4">4</button>
+          <button class="fp-btn" data-n="5">5</button>
+          <span class="fp-hint">more food → luckier 7s + bigger rewards</span>
+        </div>
+        <button class="punch-btn" id="punchBtn">FEED &amp; PUNCH</button>
+        <div class="cost-note" id="costNote">pour <b>1</b> food → MOLI eats → PUNCH!</div>
+      </div>
+
+      <!-- food bag: bottom center, like the sketch -->
+      <div class="bag-row">
+        <div class="bag">
+          <svg viewBox="0 0 40 44" width="34">
+            <rect x="10" y="2" width="20" height="10" rx="2" fill="#e8dcbc" stroke="#2b2b2b" stroke-width="2.5"/>
+            <path d="M6 12 L34 12 L38 42 L2 42 Z" fill="#f6f0e0" stroke="#2b2b2b" stroke-width="2.5" stroke-linejoin="round"/>
+            <circle cx="14" cy="26" r="1.8" fill="#2b2b2b"/><circle cx="22" cy="30" r="1.8" fill="#2b2b2b"/>
+            <circle cx="28" cy="25" r="1.8" fill="#2b2b2b"/><circle cx="18" cy="36" r="1.8" fill="#2b2b2b"/>
+            <circle cx="27" cy="36" r="1.8" fill="#2b2b2b"/>
+          </svg>
+          <div>
+            <div class="num" id="foodVal">20</div>
+            <div class="lbl">CAT FOOD</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- rank -->
+    <div class="rank-col">
+      <div class="rank">
+        <h3>LUCKY RANK</h3>
+        <input id="nameInput" maxlength="12" placeholder="your nickname…">
+        <div id="rankList" style="margin-top:6px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>pour food → MOLI eats → ONE PUNCH → 7 digits stop at random ★ SPACE to feed ★ just for fun, no real prizes&nbsp;<span style="opacity:.55">· v3 story ·</span></footer>
+</div>
+
+<script>
+/* ---------------- state ---------------- */
+let food = 20, punches = 0, bestSevens = 0, lastSevens = 0;
+let spinning = false;
+let playerName = "";
+let feedN = 1; /* scoops per punch: 1-5 */
+
+/* payout: sevens in one punch -> cat food reward (rebalanced: 1 scoop ≈ break-even, big scoops = risky luck gambling) */
+const PAY = [0, 1, 3, 10, 25, 50, 80, 150];
+const TILES = 7;
+
+/* base 7 chance per digit; each extra scoop adds a tiny whisper of luck (not pay-to-win) */
+const BASE7 = 0.12, SCOOP_BONUS = 0.005; /* 5 scoops => 0.14, +17% relative, invisible to the eye */
+
+/* MOLI's thank-you lines after each punch */
+const THANKS = [
+  "MOLI got stronger again — thanks to your snacks!",
+  "That punch was faster! Your food is working!",
+  "If MOLI wins the belt, dinner is on him!",
+  "MOLI: one more scoop and I'll break my record!",
+  "The champ purrs: you feed me like family.",
+  "Trainer's note: MOLI's power is rising!",
+  "MOLI flexed at the mirror twice tonight. Progress!",
+  "Someday MOLI will repay you with a feast!",
+  "MOLI's jab got sharper — coach approves!",
+  "The gym bell rang — that was for YOU, feeder!",
+  "MOLI dreams of the championship… and of more food.",
+  "Champ's promise: every scoop turns into muscle!"
+];
+
+/* ---------------- elements ---------------- */
+const winBox  = document.getElementById('winBox');
+const msg     = document.getElementById('msg');
+const hang    = document.getElementById('hang');
+const cat     = document.getElementById('cat');
+const catCap  = document.getElementById('catCaption');
+const foodVal = document.getElementById('foodVal');
+const bowlDots= document.getElementById('bowlDots');
+const bowl    = document.querySelector('.bowl');
+const rankList= document.getElementById('rankList');
+const nameInput = document.getElementById('nameInput');
+const punchBtn  = document.getElementById('punchBtn');
+
+/* build 7 tiles */
+const tiles = [];
+for(let i=0;i<TILES;i++){
+  const t = document.createElement('div');
+  t.className = 'tile';
+  t.textContent = '7';
+  winBox.appendChild(t);
+  tiles.push(t);
+}
+/* bowl dots */
+for(let i=0;i<7;i++) bowlDots.appendChild(document.createElement('i'));
+
+/* ---------------- audio ---------------- */
+let actx = null;
+function tone(freq, dur=0.08, type='square', vol=0.05){
+  try{
+    if(!actx) actx = new (window.AudioContext||window.webkitAudioContext)();
+    if(actx.state === 'suspended') actx.resume();
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(vol, actx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime+dur);
+    o.connect(g).connect(actx.destination);
+    o.start(); o.stop(actx.currentTime+dur);
+  }catch(e){}
+}
+/* white-noise burst — for punches / impacts */
+function noise(dur=0.12, vol=0.08){
+  try{
+    if(!actx) actx = new (window.AudioContext||window.webkitAudioContext)();
+    if(actx.state === 'suspended') actx.resume();
+    const len = Math.floor(actx.sampleRate * dur);
+    const buf = actx.createBuffer(1, len, actx.sampleRate);
+    const data = buf.getChannelData(0);
+    for(let i=0;i<len;i++) data[i] = (Math.random()*2-1) * (1 - i/len);
+    const src = actx.createBufferSource(); src.buffer = buf;
+    const g = actx.createGain(); g.gain.value = vol;
+    const f = actx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 1200;
+    src.connect(f).connect(g).connect(actx.destination);
+    src.start();
+  }catch(e){}
+}
+
+/* ---------------- BGM: tiny hand-drawn melody loop ----------------
+   Cheerful practice-room tune, very quiet; toggle with the ♪ button. */
+let bgmOn = true, bgmTimer = null, bgmStep = 0;
+const MELODY = [
+  523,0,659,784, 659,0,523,0,
+  587,0,698,880, 698,587,523,0,
+  440,0,523,659, 784,659,523,587,
+  523,0,392,440, 523,0,0,0
+];
+const BASSLN = [131,0,196,0, 165,0,196,0, 110,0,165,0, 131,0,196,0];
+function bgmBeat(){
+  const m = MELODY[bgmStep % MELODY.length];
+  if(m) tone(m, .18, 'triangle', .016);
+  if(bgmStep % 2 === 0){
+    const b = BASSLN[(bgmStep/2) % BASSLN.length];
+    if(b) tone(b, .3, 'sine', .022);
+  }
+  bgmStep++;
+}
+function startBGM(){
+  if(bgmTimer || !bgmOn) return;
+  bgmTimer = setInterval(bgmBeat, 230);
+}
+function stopBGM(){ clearInterval(bgmTimer); bgmTimer = null; }
+
+/* ---------------- helpers ---------------- */
+function say(text, cls){
+  msg.className = 'msg' + (cls ? ' ' + cls : '');
+  msg.textContent = text;
+}
+function setCat(anim, caption){
+  cat.setAttribute('class', 'cat' + (anim ? ' ' + anim : ' idle')); /* SVG className is read-only! */
+  if(caption !== undefined) catCap.textContent = caption;
+}
+function updateFood(){
+  foodVal.textContent = food;
+  try{ localStorage.setItem('pearball_save', JSON.stringify({food, punches, bestSevens})); }catch(e){}
+}
+function showBowlDots(n){
+  [...bowlDots.children].forEach((d,i)=>d.classList.toggle('on', i < n));
+}
+
+/* ---------------- rank (by sevens in ONE punch, top 3 = A/B/C) ---------------- */
+const RIVALS = [
+  {name:"Mochi",  sevens:4},
+  {name:"Sketchy",sevens:2},
+  {name:"Doodle", sevens:1}
+];
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function renderRank(){
+  const rows = RIVALS.map(r=>({...r, me:false}));
+  if(bestSevens >= 1) rows.push({name: playerName || "You", sevens: bestSevens, me:true});
+  rows.sort((a,b)=>(b.sevens + (b.me?0.4:0)) - (a.sevens + (a.me?0.4:0)));
+  rankList.innerHTML = '';
+  rows.slice(0,3).forEach((r,i)=>{
+    const div = document.createElement('div');
+    div.className = 'rk-row' + (r.me ? ' me' : '');
+    div.innerHTML =
+      '<span class="rk-badge '+'abc'[i]+'">'+'ABC'[i]+'</span>' +
+      '<span class="rk-nm">'+escapeHtml(r.name)+(r.me?' (you)':'')+'</span>' +
+      '<span class="rk-n7">7×'+r.sevens+'</span>';
+    rankList.appendChild(div);
+  });
+  if(bestSevens < 1){
+    const h = document.createElement('div');
+    h.className = 'rk-hint';
+    h.textContent = 'Land a 7 to join the rank!';
+    rankList.appendChild(h);
+  }
+}
+nameInput.addEventListener('input', ()=>{
+  playerName = nameInput.value.trim();
+  try{ localStorage.setItem('pearball_name', playerName); }catch(e){}
+  renderRank();
+});
+
+/* ---------------- timing config (tune freely) ----------------
+   pourMs   : food pouring into the bowl
+   eatMs    : MOLI eating
+   rollTick : digit cycling speed while rolling
+   stopMin  : earliest stop after rolling starts (ms)
+   stopMax  : latest stop — all 7 digits locked within this window  */
+const TIMING = { pourMs: 450, eatMs: 1100, flexMs: 1600, rollTick: 65, stopMin: 3000, stopMax: 4000 };
+
+/* ---------------- feed → eat → punch → roll! ---------------- */
+function punch(){
+  if(spinning) return;
+  startBGM(); /* browsers need a user gesture before audio */
+
+  if(food < feedN){
+    food += 3; updateFood();
+    say("Out of food! MOLI finds 3 more for you.");
+    tone(300,.25,'sine',.06);
+    return;
+  }
+
+  spinning = true; punches++;
+  food -= feedN; updateFood();
+  punchBtn.disabled = true;
+
+  /* 1. pour the scoops into the bowl */
+  say("Pouring " + feedN + " scoop" + (feedN>1?"s":"") + " into the bowl…");
+  showBowlDots(feedN);
+  for(let i=0;i<Math.min(feedN,3);i++) setTimeout(()=>tone(700+i*90,.06,'sine',.05), i*110);
+
+  /* 2. MOLI eats it */
+  setTimeout(()=>{
+    setCat('eat', "Nom nom nom… power up!");
+    bowl.classList.add('eat');
+    const bites = Math.max(2, feedN + 1);
+    for(let i=0;i<bites;i++) setTimeout(()=>tone(260-i*18,.22,'sine',.04), i*350);
+  }, TIMING.pourMs);
+
+  /* 3. warm-up flex, then one punch hits the pear ball */
+  setTimeout(()=>{
+    bowl.classList.remove('eat');
+    showBowlDots(0);
+    say("Warming up the champ arm…");
+    setCat('flex', "Feel the power!");
+    tone(300,.12,'triangle',.05);
+    setTimeout(()=>tone(340,.12,'triangle',.05), 250);
+    setTimeout(()=>tone(380,.12,'triangle',.05), 500);
+    setTimeout(()=>tone(420,.12,'triangle',.05), 750);
+  }, TIMING.pourMs + TIMING.eatMs);
+
+  /* 4. PUNCH! MOLI leaps up at the pear ball, digits roll together and stop at RANDOM times */
+  const sevenChance = BASE7 + (feedN - 1) * SCOOP_BONUS;
+  const result = [];
+  for(let i=0;i<TILES;i++){
+    result.push(Math.random() < sevenChance ? 7 : Math.floor(Math.random()*10));
+  }
+  const rollStart = TIMING.pourMs + TIMING.eatMs + TIMING.flexMs + 200;
+  const stopTimes = tiles.map(()=> TIMING.stopMin + Math.random() * (TIMING.stopMax - TIMING.stopMin));
+
+  setTimeout(()=>{
+    say("PUNCH!");
+    setCat('hit', "Take THIS!");
+    noise(.14, .1);           /* whoosh-impact */
+    setTimeout(()=>tone(180,.1,'square',.06), 120); /* thump */
+    setTimeout(()=>{
+      hang.classList.add('hit');
+      tone(880,.05,'sine',.04); /* ball "boing" */
+    }, 230); /* ball reacts right as the leap lands */
+    setTimeout(()=>{
+      hang.classList.remove('hit');
+      setCat('watch', "Go go go — lucky sevens!");
+    }, 900);
+  }, rollStart - 350);
+
+  setTimeout(()=>{
+    tiles.forEach(t=>{ t.classList.remove('set','red','pop'); t.textContent = '?'; });
+    /* rolling tick — classic slot-machine dada-dada while digits cycle */
+    let tickFlip = 0;
+    const tickIv = setInterval(()=>{
+      tone(tickFlip++ % 2 ? 990 : 920, .03, 'square', .022);
+    }, TIMING.rollTick * 2);
+    tiles.forEach((t,i)=>{
+      const iv = setInterval(()=>{
+        const d = Math.floor(Math.random()*10);
+        t.textContent = d;
+        t.classList.toggle('red', d===7);
+      }, TIMING.rollTick);
+      setTimeout(()=>{
+        clearInterval(iv);
+        const d = result[i];
+        t.textContent = d;
+        t.classList.toggle('red', d===7);
+        t.classList.add('set','pop');
+        setTimeout(()=>t.classList.remove('pop'), 260);
+        tone(660+i*40, .05, 'square', .045); /* lock-in click, slightly louder than ticks */
+      }, stopTimes[i]);
+    });
+    /* ticks stop when the last digit locks */
+    const rollEnd = Math.max(...stopTimes);
+    setTimeout(()=>clearInterval(tickIv), rollEnd + 40);
+  }, rollStart);
+
+  const total = rollStart + Math.max(...stopTimes) + 150;
+  setTimeout(()=>resolve(result), total);
+}
+
+function resolve(result){
+  const sevens = result.filter(d=>d===7).length;
+  /* bigger feed = bigger reward multiplier — keeps every scoop level near break-even,
+     so the bag no longer inflates to 3 digits */
+  const reward = Math.round(PAY[sevens] * (1 + (feedN - 1) * 0.4));
+
+  if(sevens === 7){
+    food += reward; updateFood();
+    showBowlDots(7);
+    say("★ 7 SEVENS! FULL BOWL! +"+reward+" food ★", 'big');
+    setCat('big', "MEOW!! You ARE the luckiest!");
+    [523,659,784,1047,1319].forEach((f,i)=>setTimeout(()=>tone(f,.25,'triangle',.08), i*110));
+  } else if(sevens >= 3){
+    food += reward; updateFood();
+    showBowlDots(sevens);
+    say(sevens+" sevens! The bowl is happy. +"+reward+" food", 'win');
+    setCat('win', "Purr purr purr…");
+    [523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,.22,'triangle',.07), i*90));
+  } else if(sevens >= 1){
+    food += reward; updateFood();
+    showBowlDots(sevens);
+    say(sevens===1 ? "A seven! +"+reward+" food" : sevens+" sevens! +"+reward+" food", 'win');
+    setCat('win', "Nice punch!");
+    tone(660,.15,'triangle',.07);
+  } else {
+    showBowlDots(0);
+    say("No sevens… MOLI believes in you. Try again!");
+    setCat('sad', "Phew… the champ needs another snack.");
+    tone(400,.18,'sawtooth',.04);
+    setTimeout(()=>tone(300,.2,'sawtooth',.04), 180);
+    setTimeout(()=>tone(210,.3,'sawtooth',.04), 400);
+    setTimeout(()=>{ if(!spinning) setCat('idle', "Every punch brings luck closer…"); }, 4200);
+  }
+
+  if(sevens > bestSevens){
+    bestSevens = sevens;
+    if(sevens >= 1 && sevens < 7){
+      setTimeout(()=>say("NEW RECORD — "+sevens+" sevens in one punch!", 'win'), 2200);
+    }
+  }
+
+  /* MOLI says thanks for the feeding — a random line, only if nothing else is talking */
+  setTimeout(()=>{
+    if(spinning) return;
+    catCap.textContent = THANKS[Math.floor(Math.random()*THANKS.length)];
+  }, 2800);
+
+  updateFood();
+  renderRank();
+
+  spinning = false;
+  punchBtn.disabled = false;
+  setTimeout(()=>{ if(!spinning && !cat.classList.contains('sad')) setCat('idle'); }, 2400);
+}
+
+/* ---------------- events ---------------- */
+punchBtn.onclick = punch;
+hang.onclick = punch;
+document.addEventListener('keydown', e=>{
+  if(e.code==='Space' && document.activeElement !== nameInput){ e.preventDefault(); punch(); }
+});
+
+/* feed amount picker */
+const costNote = document.getElementById('costNote');
+document.querySelectorAll('.fp-btn').forEach(btn=>{
+  btn.onclick = ()=>{
+    feedN = parseInt(btn.dataset.n, 10);
+    document.querySelectorAll('.fp-btn').forEach(b=>b.classList.toggle('sel', b===btn));
+    costNote.innerHTML = 'pour <b>'+feedN+'</b> food → MOLI eats → PUNCH!';
+    startBGM();
+    tone(880 + feedN*80, .06, 'triangle', .05); /* picker blip */
+  };
+});
+
+/* music toggle */
+const musicBtn = document.getElementById('musicBtn');
+musicBtn.onclick = ()=>{
+  bgmOn = !bgmOn;
+  musicBtn.classList.toggle('off', !bgmOn);
+  musicBtn.textContent = bgmOn ? '♪ BGM: ON' : '♪ BGM: OFF';
+  if(bgmOn){ startBGM(); tone(660,.1,'triangle',.05); }
+  else stopBGM();
+};
+
+/* ---------------- prologue: MOLI's story ---------------- */
+/* tiny reusable cat drawing for story scenes */
+function storyCat(opts){
+  opts = opts || {};
+  const face = opts.face === 'sad' ? 'M52 44 Q58 40 64 44'
+             : opts.face === 'happy' ? 'M52 42 Q60 52 68 42'
+             : opts.face === 'determined' ? 'M50 42 Q60 50 70 42'
+             : 'M54 44 Q60 48 66 44';
+  const eyes = opts.face === 'determined'
+    ? '<path d="M46 36 L56 36" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/><path d="M64 36 L74 36" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>'
+    : '<circle cx="50" cy="36" r="2.6" fill="#2b2b2b"/><circle cx="70" cy="36" r="2.6" fill="#2b2b2b"/>';
+  return '<g class="body-g">'
+    + '<path d="M38 26 L34 6 L52 18" fill="#f6f0e0" stroke="#2b2b2b" stroke-width="3" stroke-linejoin="round"/>'
+    + '<path d="M82 26 L86 6 L68 18" fill="#f6f0e0" stroke="#2b2b2b" stroke-width="3" stroke-linejoin="round"/>'
+    + '<ellipse cx="60" cy="40" rx="34" ry="26" fill="#f6f0e0" stroke="#2b2b2b" stroke-width="3"/>'
+    + '<g class="eyes">'+eyes+'</g>'
+    + '<path d="'+face+'" fill="none" stroke="#2b2b2b" stroke-width="2.5" stroke-linecap="round"/>'
+    + '<rect x="38" y="64" width="44" height="52" rx="14" fill="#f6f0e0" stroke="#2b2b2b" stroke-width="3"/>'
+    + '<text x="60" y="94" text-anchor="middle" font-size="14" font-weight="bold" fill="#2b2b2b" font-family="inherit">MOLI</text>'
+    + '<path d="M82 108 Q104 102 100 78" fill="none" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>'
+    + '<path d="M50 116 L48 138" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>'
+    + '<path d="M70 116 L72 138" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>'
+    + '</g>';
+}
+
+const STORY = [
+  { /* 1. stray kitten on the street */
+    art: '<svg viewBox="0 0 220 160">'
+      + '<line x1="0" y1="150" x2="220" y2="150" stroke="#2b2b2b" stroke-width="3"/>'
+      + '<rect x="24" y="88" width="70" height="62" rx="6" fill="#e8dcbc" stroke="#2b2b2b" stroke-width="3"/>' /* cardboard box */
+      + '<line x1="150" y1="0" x2="150" y2="26" stroke="#2b2b2b" stroke-width="3"/>'
+      + '<ellipse cx="150" cy="34" rx="20" ry="9" fill="#ffe27a" stroke="#2b2b2b" stroke-width="3" class="s-tv-flicker"/>'
+      + '<path d="M188 92 l7 0 -2 10 -3 0 Z" fill="#7a7a7a"/>'
+      + '<g transform="translate(-5,8) scale(.72)" style="animation:breathe 3s ease-in-out infinite;">'+storyCat({face:'sad'})+'</g>'
+      + '</svg>',
+    text: 'MOLI is a <b>stray kitten</b> living on the street.<br>His home: an old cardboard box.'
+  },
+  { /* 2. bullied by other cats */
+    art: '<svg viewBox="0 0 220 160">'
+      + '<line x1="0" y1="150" x2="220" y2="150" stroke="#2b2b2b" stroke-width="3"/>'
+      + '<g class="s-shiver"><g transform="translate(-30,10) scale(.68)">'+storyCat({face:'sad'})+'</g></g>'
+      + '<g transform="translate(128,2) scale(.9)">'
+      + '<path d="M30 26 L26 8 L42 18" fill="#cfc6ae" stroke="#2b2b2b" stroke-width="3" stroke-linejoin="round"/>'
+      + '<path d="M66 26 L70 8 L54 18" fill="#cfc6ae" stroke="#2b2b2b" stroke-width="3" stroke-linejoin="round"/>'
+      + '<ellipse cx="48" cy="38" rx="30" ry="24" fill="#cfc6ae" stroke="#2b2b2b" stroke-width="3"/>'
+      + '<path d="M34 34 L44 34" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>'
+      + '<path d="M52 34 L62 34" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>'
+      + '<path d="M36 48 Q48 42 60 48" fill="none" stroke="#2b2b2b" stroke-width="2.5" stroke-linecap="round"/>'
+      + '<rect x="30" y="62" width="36" height="42" rx="12" fill="#cfc6ae" stroke="#2b2b2b" stroke-width="3"/>'
+      + '<text x="48" y="88" text-anchor="middle" font-size="11" font-weight="bold" fill="#2b2b2b" font-family="inherit">BULLY</text>'
+      + '<path d="M66 100 L86 92" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>'
+      + '</g>'
+      + '<text x="150" y="70" font-size="22" font-weight="bold" fill="#c0392b" font-family="inherit" transform="rotate(-8 150 70)">!</text>'
+      + '</svg>',
+    text: 'He is often <b>bullied</b> by other cats.<br>Every scrap of food, every warm corner — taken away.'
+  },
+  { /* 3. watching Rocky on an old TV */
+    art: '<svg viewBox="0 0 220 160">'
+      + '<rect x="46" y="34" width="128" height="92" rx="12" fill="#e8dcbc" stroke="#2b2b2b" stroke-width="3"/>'
+      + '<rect x="58" y="46" width="90" height="66" rx="6" fill="#fdf9ee" stroke="#2b2b2b" stroke-width="3" class="s-tv-flicker"/>'
+      + '<circle cx="162" cy="60" r="6" fill="#2b2b2b"/><circle cx="162" cy="78" r="6" fill="#2b2b2b"/>'
+      + '<rect x="14" y="96" width="30" height="16" rx="4" fill="#e8dcbc" stroke="#2b2b2b" stroke-width="2.5"/>' /* antenna */
+      + '<line x1="24" y1="96" x2="4" y2="52" stroke="#2b2b2b" stroke-width="2.5"/>'
+      + '<line x1="24" y1="96" x2="44" y2="52" stroke="#2b2b2b" stroke-width="2.5"/>'
+      + '<g transform="translate(78,48) scale(.42)">'
+      + '<path d="M38 26 L34 6 L52 18" fill="#f6f0e0" stroke="#2b2b2b" stroke-width="3.5" stroke-linejoin="round"/>'
+      + '<path d="M82 26 L86 6 L68 18" fill="#f6f0e0" stroke="#2b2b2b" stroke-width="3.5" stroke-linejoin="round"/>'
+      + '<ellipse cx="60" cy="40" rx="34" ry="26" fill="#f6f0e0" stroke="#2b2b2b" stroke-width="3.5"/>'
+      + '<circle cx="50" cy="36" r="2.6" fill="#2b2b2b"/><circle cx="70" cy="36" r="2.6" fill="#2b2b2b"/>'
+      + '<path d="M52 42 Q60 52 68 42" fill="none" stroke="#2b2b2b" stroke-width="2.5" stroke-linecap="round"/>'
+      + '<rect x="38" y="64" width="44" height="52" rx="14" fill="#c0392b" stroke="#2b2b2b" stroke-width="3.5"/>' /* red boxing robe-ish */
+      + '<circle cx="30" cy="78" r="12" fill="#c0392b" stroke="#2b2b2b" stroke-width="3"/>'
+      + '<circle cx="90" cy="78" r="12" fill="#c0392b" stroke="#2b2b2b" stroke-width="3"/>'
+      + '<path d="M50 116 L48 138" stroke="#2b2b2b" stroke-width="3.5" stroke-linecap="round"/>'
+      + '<path d="M70 116 L72 138" stroke="#2b2b2b" stroke-width="3.5" stroke-linecap="round"/>'
+      + '</g>'
+      + '<text x="110" y="142" text-anchor="middle" font-size="13" font-weight="bold" fill="#2b2b2b" font-family="inherit" letter-spacing="3">ROCKY</text>'
+      + '</svg>',
+    text: 'One day, he watched the movie <b>ROCKY</b> starring Sylvester Stallone<br>on an old television… and something sparked.'
+  },
+  { /* 4. decided to train, but terribly hungry */
+    art: '<svg viewBox="0 0 220 160">'
+      + '<line x1="0" y1="150" x2="220" y2="150" stroke="#2b2b2b" stroke-width="3"/>'
+      + '<g transform="translate(10,6)">'
+      + storyCat({face:'determined'})
+      + '<path class="arm" d="M38 74 Q20 60 34 44" fill="none" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>'
+      + '<circle cx="32" cy="42" r="11" fill="#c0392b" stroke="#2b2b2b" stroke-width="3"/>'
+      + '</g>'
+      + '<g transform="translate(118,44) rotate(14)" class="s-hungry">'
+      + '<rect x="10" y="2" width="20" height="10" rx="2" fill="#e8dcbc" stroke="#2b2b2b" stroke-width="2.5"/>'
+      + '<path d="M6 12 L34 12 L38 42 L2 42 Z" fill="#f6f0e0" stroke="#2b2b2b" stroke-width="2.5" stroke-linejoin="round"/>'
+      + '<text x="20" y="32" text-anchor="middle" font-size="11" font-weight="bold" fill="#c0392b" font-family="inherit">EMPTY</text>'
+      + '</g>'
+      + '</svg>',
+    text: 'He decided to train himself for <b>boxing</b>.<br>But he is <b>terribly hungry</b>… a hungry fist throws no punches.'
+  },
+  { /* 5. call to action */
+    art: '<svg viewBox="0 0 220 160">'
+      + '<line x1="0" y1="150" x2="220" y2="150" stroke="#2b2b2b" stroke-width="3"/>'
+      + '<g transform="translate(16,6) scale(.9)">'
+      + storyCat({face:'happy'})
+      + '</g>'
+      + '<g transform="translate(118,104)">'
+      + '<path d="M10 12 L100 12 L88 42 L22 42 Z" fill="#fbf6e7" stroke="#2b2b2b" stroke-width="3" stroke-linejoin="round"/>'
+      + '<circle cx="34" cy="10" r="4" fill="#6b4f2a" stroke="#2b2b2b" stroke-width="2"/>'
+      + '<circle cx="50" cy="8" r="4" fill="#6b4f2a" stroke="#2b2b2b" stroke-width="2"/>'
+      + '<circle cx="66" cy="10" r="4" fill="#6b4f2a" stroke="#2b2b2b" stroke-width="2"/>'
+      + '<circle cx="44" cy="18" r="4" fill="#6b4f2a" stroke="#2b2b2b" stroke-width="2"/>'
+      + '<circle cx="60" cy="18" r="4" fill="#6b4f2a" stroke="#2b2b2b" stroke-width="2"/>'
+      + '</g>'
+      + '<text x="160" y="52" text-anchor="middle" font-size="18" font-weight="bold" fill="#b8860b" font-family="inherit" transform="rotate(6 160 52)">?</text>'
+      + '</svg>',
+    text: 'Pour cat food into his bowl, feed his punches,<br>roll the lucky sevens —<br><b>Let’s help him make his dream come true!</b>',
+    final: true
+  }
+];
+
+/* story BGM: a wistful street-kitten tune for the prologue (slow, minor, hopeful at the end) */
+let storyBgmTimer = null, storyBgmStep = 0, storyBgmStarted = false;
+const STORY_MELODY = [
+  330,0,262,0, 220,0,262,0,      /* A minor — lonely street */
+  247,0,294,0, 330,0,0,0,        /* bullied, wandering */
+  330,0,294,0, 247,0,220,0,      /* a quiet TV glow */
+  262,0,330,0, 440,0,0,0         /* the dream lifts up */
+];
+function storyBgmBeat(){
+  const m = STORY_MELODY[storyBgmStep % STORY_MELODY.length];
+  if(m) tone(m, .5, 'triangle', .02);
+  if(storyBgmStep % 4 === 0) tone(110, .9, 'sine', .025); /* soft heartbeat bass */
+  storyBgmStep++;
+}
+function startStoryBGM(){
+  if(storyBgmTimer || storyBgmStarted || !bgmOn) return;
+  try{
+    if(!actx) actx = new (window.AudioContext||window.webkitAudioContext)();
+  }catch(e){ return; }
+  if(actx.state === 'suspended'){
+    /* browser needs a gesture; resume now (called inside a gesture) and start when ready */
+    actx.resume().then(()=>{
+      if(bgmOn && !storyBgmTimer && !storyEl.classList.contains('gone')){
+        storyBgmStarted = true;
+        storyBgmTimer = setInterval(storyBgmBeat, 420);
+      }
+    }).catch(()=>{});
+    return;
+  }
+  storyBgmStarted = true;
+  storyBgmTimer = setInterval(storyBgmBeat, 420);
+}
+/* true when the browser still blocks audio (no user gesture yet) */
+function audioBlocked(){
+  return bgmOn && (!actx || actx.state === 'suspended');
+}
+function stopStoryBGM(){ clearInterval(storyBgmTimer); storyBgmTimer = null; }
+
+const storyEl    = document.getElementById('story');
+const storyArtEl = document.getElementById('storyArt');
+const storyTextEl= document.getElementById('storyText');
+const storyKicker= document.getElementById('storyKicker');
+const storyNavEl = document.getElementById('storyNav');
+const storyDots  = [...document.getElementById('storyDots').children];
+let storyIdx = 0;
+
+function showStoryScene(i){
+  storyIdx = i;
+  const sc = STORY[i];
+  storyArtEl.innerHTML = sc.art;
+  storyTextEl.innerHTML = sc.text;
+  storyKicker.textContent = 'PROLOGUE · CHAPTER ' + (i+1) + ' / ' + STORY.length;
+  storyDots.forEach((d,j)=>d.classList.toggle('on', j<=i));
+  if(sc.final){
+    storyNavEl.style.display = 'none';
+    storyNavEl.insertAdjacentHTML('afterend',
+      '<button class="story-btn" id="storyStart">HELP MOLI TRAIN ▶</button>');
+    document.getElementById('storyStart').onclick = endStory;
+    storyKicker.textContent = 'PROLOGUE · TO BE CONTINUED IN THE RING';
+  } else {
+    storyNavEl.style.display = '';
+    const btn = document.getElementById('storyStart');
+    if(btn) btn.remove();
+    storyNavEl.textContent = (i === 0 && audioBlocked())
+      ? 'tap once to turn on the music ♪'
+      : 'click to continue ▸';
+  }
+}
+function endStory(){
+  storyEl.classList.add('gone');
+  setTimeout(()=>storyEl.remove(), 550);
+  stopStoryBGM();
+  startBGM(); /* switch to the cheerful training-room tune */
+}
+storyEl.addEventListener('click', e=>{
+  if(e.target.id === 'storySkip' || e.target.classList.contains('story-skip')) return;
+  /* first tap only unlocks the audio (browser gesture rule) — page turns on the next tap */
+  if(audioBlocked()){
+    startStoryBGM();
+    if(storyIdx === 0) storyNavEl.textContent = 'music on ♪ — tap to continue ▸';
+    return;
+  }
+  if(storyIdx < STORY.length - 1) showStoryScene(storyIdx + 1);
+});
+document.getElementById('storySkip').onclick = endStory;
+document.addEventListener('keydown', e=>{
+  if(e.code==='Space' && !storyEl.classList.contains('gone')){
+    e.preventDefault();
+    if(audioBlocked()){
+      startStoryBGM();
+      if(storyIdx === 0) storyNavEl.textContent = 'music on ♪ — tap to continue ▸';
+      return;
+    }
+    if(storyIdx < STORY.length - 1) showStoryScene(storyIdx + 1);
+    else endStory();
+  }
+});
+showStoryScene(0);
+
+/* try to autoplay the prologue tune right away — some browsers allow it,
+   others wait for the first tap (scene 1 then shows "tap once for music") */
+(function(){
+  try{
+    if(!actx) actx = new (window.AudioContext||window.webkitAudioContext)();
+    if(actx.state === 'running'){
+      startStoryBGM();
+    } else {
+      actx.resume().then(()=>{
+        if(actx.state === 'running' && !storyEl.classList.contains('gone')){
+          startStoryBGM();
+          if(storyIdx === 0 && storyNavEl.style.display !== 'none'){
+            storyNavEl.textContent = 'music on ♪ — click to continue ▸';
+          }
+        }
+      }).catch(()=>{});
+    }
+  }catch(e){}
+})();
+
+/* ---------------- init ---------------- */
+try{
+  const s = JSON.parse(localStorage.getItem('pearball_save'));
+  if(s){
+    food = (typeof s.food === 'number') ? s.food : food;
+    punches = s.punches || 0;
+    bestSevens = s.bestSevens || 0;
+  }
+  playerName = localStorage.getItem('pearball_name') || "";
+}catch(e){}
+nameInput.value = playerName;
+updateFood();
+renderRank();
+
+/* ---------------- storytest (?storytest=1): auto-play the prologue, verify transitions ---------------- */
+if(location.search.indexOf('storytest=1') !== -1){
+  const log = document.createElement('pre');
+  log.id = 'storytestLog';
+  document.body.appendChild(log);
+  window.addEventListener('error', e=>{ log.textContent += 'JS-ERROR: ' + e.message + ' @line ' + e.lineno + '\n'; });
+  const t0 = performance.now();
+  log.textContent += 'scene0: ' + (storyEl.classList.contains('gone') ? 'GONE(bad)' : 'visible(ok)')
+    + ' | kicker=' + storyKicker.textContent + '\n';
+  [1,2,3,4].forEach(n=>{
+    setTimeout(()=>{
+      showStoryScene(n);
+      const sc = STORY[n];
+      const startBtn = document.getElementById('storyStart');
+      log.textContent += 't=' + Math.round(performance.now()-t0) + 'ms scene' + (n+1)
+        + ' final=' + !!sc.final
+        + ' startBtn=' + (startBtn ? 'present' : 'none') + '\n';
+    }, n*120);
+  });
+  setTimeout(()=>{
+    endStory();
+    log.textContent += 'after endStory: overlay gone=' + storyEl.classList.contains('gone') + '\n';
+    punch();
+    log.textContent += 'punch() after story: ok, spinning=' + spinning + '\n';
+  }, 800);
+}
+
+/* ---------------- selftest (?selftest=1): run one punch, record cat states ---------------- */
+if(location.search.indexOf('selftest=1') !== -1){
+  const logEl = document.createElement('pre');
+  logEl.id = 'selftestLog';
+  document.body.appendChild(logEl);
+  const t0 = performance.now();
+  window.addEventListener('error', e=>{ logEl.textContent += 'JS-ERROR: ' + e.message + ' @line ' + e.lineno + '\n'; });
+  const obs = new MutationObserver(()=>{
+    const cls = (cat.getAttribute('class')||'').replace(/^cat\s*/,'').trim();
+    const cs = getComputedStyle(cat.querySelector('.body-g'));
+    const t = Math.round(performance.now() - t0);
+    logEl.textContent += 't=' + t + 'ms  class=' + (cls||'(none)') + '  bodyG-anim=' + cs.animationName + '\n';
+  });
+  obs.observe(cat, {attributes:true, attributeFilter:['class']});
+  logEl.textContent += 'SELFTEST START\n';
+  /* probe: track scheduled vs fired timers */
+  const origST = window.setTimeout.bind(window);
+  window.setTimeout = function(fn, d, ...a){
+    logEl.textContent += 'schedule: ' + d + 'ms\n';
+    return origST(function(){
+      logEl.textContent += 'FIRED: ' + d + 'ms\n';
+      fn(...a);
+    }, d, ...a);
+  };
+  try{
+    punch();
+    logEl.textContent += 'punch() returned normally\n';
+  }catch(err){
+    logEl.textContent += 'punch() THREW: ' + err.message + '\n';
+  }
+}
+</script>
+</body>
+</html>
