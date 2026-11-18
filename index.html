@@ -530,6 +530,28 @@ const rankList= document.getElementById('rankList');
 const nameInput = document.getElementById('nameInput');
 const punchBtn  = document.getElementById('punchBtn');
 
+/* ---------------- GameForge telemetry (playtest hook) ----------------
+   window.__gameforge 让 GameForge 的试玩器直接读真实状态（场景/食物/出拳/七的个数）、fps、
+   事件流和控件表，而不是靠像素猜。纯读出，对玩法零影响；删掉这一段游戏照常跑。 */
+const GF = window.__gameforge = window.__gameforge || {};
+GF.state = GF.state || {scene:'story', food:0, punches:0, lastSevens:null, bestSevens:0, msg:''};
+GF.events = GF.events || [];
+GF.fps = GF.fps || 0;
+GF.controls = GF.controls || {move:[], action:['Space'], start:['Space']};
+function gfEvent(type, data){
+  try{ GF.events.push(Object.assign({type:type, t:+(performance.now()/1000).toFixed(2)}, data||{})); }catch(e){}
+  if(GF.events.length > 200) GF.events.splice(0, GF.events.length - 200);
+}
+let gfN = 0, gfT0 = performance.now();
+(function gfLoop(now){
+  gfN++;
+  if(now - gfT0 >= 500){
+    GF.fps = Math.round(gfN * 1000 / (now - gfT0)); gfN = 0; gfT0 = now;
+    try{ GF.state.scene = document.getElementById('story') ? 'story' : 'game'; }catch(e){}
+  }
+  requestAnimationFrame(gfLoop);
+})(gfT0);
+
 /* build 7 tiles */
 const tiles = [];
 for(let i=0;i<TILES;i++){
@@ -628,6 +650,7 @@ document.addEventListener('visibilitychange', ()=>{
 function say(text, cls){
   msg.className = 'msg' + (cls ? ' ' + cls : '');
   msg.textContent = text;
+  try{ GF.state.msg = text; }catch(e){}
 }
 function setCat(anim, caption){
   cat.setAttribute('class', 'cat' + (anim ? ' ' + anim : ' idle')); /* SVG className is read-only! */
@@ -635,6 +658,7 @@ function setCat(anim, caption){
 }
 function updateFood(){
   foodVal.textContent = food;
+  try{ GF.state.food = food; }catch(e){}
   try{ localStorage.setItem('pearball_save', JSON.stringify({food, punches, bestSevens})); }catch(e){}
 }
 function showBowlDots(n){
@@ -698,6 +722,7 @@ function punch(){
   }
 
   spinning = true; punches++;
+  GF.state.punches = punches; gfEvent('attack');
   food -= feedN; updateFood();
   punchBtn.disabled = true;
 
@@ -784,6 +809,11 @@ function punch(){
 
 function resolve(result){
   const sevens = result.filter(d=>d===7).length;
+  try{
+    GF.state.lastSevens = sevens;
+    if(sevens > GF.state.bestSevens) GF.state.bestSevens = sevens;
+    gfEvent(sevens > 0 ? 'win' : 'miss', {sevens: sevens, food: food});
+  }catch(e){}
   /* bigger feed = bigger reward multiplier — keeps every scoop level near break-even,
      so the bag no longer inflates to 3 digits */
   const reward = Math.round(PAY[sevens] * (1 + (feedN - 1) * 0.4));
@@ -1053,6 +1083,7 @@ function showStoryScene(i){
   }
 }
 function endStory(){
+  try{ GF.state.scene = 'game'; gfEvent('start'); }catch(e){}
   storyEl.classList.add('gone');
   setTimeout(()=>storyEl.remove(), 550);
   stopStoryBGM();
